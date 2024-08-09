@@ -10,9 +10,16 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["src/content.ts"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content.ts"
+      ]
     }
+  ],
+  "permissions": [
+    "storage"
   ],
   "{{chrome}}.action": {
     "default_popup": "src/popup.html"
@@ -22,6 +29,8 @@
   },
   "background": {
     "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "{{firefox}}.scripts": [
+      "src/background.ts"
+    ]
   }
 }

@@ -1,13 +1,32 @@
 <script lang="ts" setup>
+import { ref, watchEffect } from 'vue'
+import browser from 'webextension-polyfill'
+
+const serverURL = ref('http://localhost:4777')
+browser.storage.sync.get(['serverURL']).then(({ serverURL: storedServerURL }) => {
+  if (storedServerURL) {
+    serverURL.value = storedServerURL
+  }
+})
+
+watchEffect(async () => {
+  await browser.storage.sync.set({ serverURL: serverURL.value })
+})
 </script>
 
 <template>
   <div>
-    <img src="/icon-with-shadow.svg">
-    <h1>vite-plugin-web-extension</h1>
-    <p>
-      Template: <code>vue-ts</code>
-    </p>
+    <img
+      style="width: 40px; height: 40px"
+      src="/icon-with-shadow.svg"
+    >
+    <h1>Pictoria</h1>
+    <div>
+      <input
+        v-model="serverURL"
+        placeholder="Server URL"
+      >
+    </div>
   </div>
 </template>
 
