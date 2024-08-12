@@ -19,8 +19,7 @@
     }
   ],
   "permissions": [
-    "storage",
-    "activeTab"
+    "storage"
   ],
   "{{chrome}}.action": {
     "default_popup": "src/popup.html"

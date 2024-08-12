@@ -121,20 +121,25 @@ watchEffect(() => {
       const urls = (await Promise.all(promises)).filter(d => d) as string[]
       // 此时 images 数组中包含了所有的图片链接和文件的URL
       blobUrls.push(...urls)
+      const formData = new FormData()
       for (const url of blobUrls) {
         const urlObj = new URL(url)
-        const resp = await fetch(urlObj)
-        const blob = await resp.blob()
-        const format = await getImageFormat(blob)
-        const name = `image.${format.toLowerCase()}`
-        const type = getTypeFromFormat(format)
-        const file = new File([blob], name, { type })
         const pathname = urlObj.pathname
         const filename = pathname.substring(pathname.lastIndexOf('/') + 1)
-        const filenameWithExtension = filename.includes('.') ? filename : `${filename}.${format.toLowerCase()}`
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('path', filenameWithExtension)
+        try {
+          const resp = await fetch(urlObj)
+          const blob = await resp.blob()
+          const format = await getImageFormat(blob)
+          const name = `image.${format.toLowerCase()}`
+          const type = getTypeFromFormat(format)
+          const file = new File([blob], name, { type })
+          const filenameWithExtension = filename.includes('.') ? filename : `${filename}.${format.toLowerCase()}`
+          formData.append('file', file)
+          formData.append('path', filenameWithExtension)
+        }
+        catch {}
+        formData.append('url', url)
+        formData.append('source', window.location.href)
         let { serverURL } = await browser.storage.sync.get(['serverURL'])
         if (!serverURL) {
           serverURL = 'http://localhost:4777'
